@@ -5,6 +5,7 @@ import torch.optim as optim
 import torch.nn.functional as F
 import torchvision.transforms as transforms
 from torch.autograd import Variable
+import models
 
 transform = transforms.Compose(
     [transforms.ToTensor(),
@@ -45,7 +46,8 @@ class Net(nn.Module):
         return x
 
 
-net = Net()
+# net = Net()
+net = models.ResNet((32, 32), 10, num_classes=10)
 
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
