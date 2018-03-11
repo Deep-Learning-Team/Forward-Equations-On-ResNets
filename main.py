@@ -47,7 +47,7 @@ class Net(nn.Module):
 
 
 # net = Net()
-net = models.ResNet((32, 32), 10, num_classes=10)
+net = models.ResNet(models.BasicBlock, [2, 2, 2, 2], num_classes=10)
 
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
