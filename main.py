@@ -161,8 +161,8 @@ for epoch in xrange(10):
         loss.backward()
         optimizer.step()
         if (batch_idx + 1) % 100 == 0 or (batch_idx + 1) == len(train_loader):
-            print '==>>> epoch: {}, batch index: {}, train loss: {:.6f}'.format(
-                epoch, batch_idx + 1, ave_loss)
+            print('==>>> epoch: {}, batch index: {}, train loss: {:.6f}'.format(
+                epoch, batch_idx + 1, ave_loss))
     # testing
     correct_cnt, ave_loss = 0, 0
     total_cnt = 0
@@ -179,7 +179,7 @@ for epoch in xrange(10):
         ave_loss = ave_loss * 0.9 + loss.data[0] * 0.1
 
         if(batch_idx + 1) % 100 == 0 or (batch_idx + 1) == len(test_loader):
-            print '==>>> epoch: {}, batch index: {}, test loss: {:.6f}, acc: {:.3f}'.format(
-                epoch, batch_idx + 1, ave_loss, correct_cnt * 1.0 / total_cnt)
+            print('==>>> epoch: {}, batch index: {}, test loss: {:.6f}, acc: {:.3f}'.format(
+                epoch, batch_idx + 1, ave_loss, correct_cnt * 1.0 / total_cnt))
 
 torch.save(model.state_dict(), model.name())
