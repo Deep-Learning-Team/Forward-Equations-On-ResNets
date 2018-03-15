@@ -7,7 +7,8 @@ import torchvision.transforms as transforms
 from torch.autograd import Variable
 import models
 
-use_cuda = torch.cuda.is_available()
+# use_cuda = torch.cuda.is_available()
+use_cuda = True
 
 transform = transforms.Compose(
     [transforms.ToTensor(),
