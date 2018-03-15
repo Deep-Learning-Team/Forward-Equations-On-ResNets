@@ -53,6 +53,7 @@ net = models.ResNet(models.BasicBlock, [2, 2, 2, 2], num_classes=10)
 
 if use_cuda:
     net = net.cuda()
+    print("Training the network using CUDA")
 
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
