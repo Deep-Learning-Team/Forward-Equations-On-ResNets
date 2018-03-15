@@ -7,18 +7,21 @@ import torchvision.transforms as transforms
 from torch.autograd import Variable
 import models
 
+use_cuda = torch.cuda.is_available()
+
 transform = transforms.Compose(
     [transforms.ToTensor(),
      transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
 
-trainset = torchvision.datasets.CIFAR10(root='./data', train=True,
+# Load CIFAR10 Dataset
+trainset_CIFAR = torchvision.datasets.CIFAR10(root='./data', train=True,
                                         download=True, transform=transform)
-trainloader = torch.utils.data.DataLoader(trainset, batch_size=4,
+trainloader_CIFAR = torch.utils.data.DataLoader(trainset_CIFAR, batch_size=4,
                                           shuffle=True, num_workers=2)
 
-testset = torchvision.datasets.CIFAR10(root='./data', train=False,
+testset_CIFAR = torchvision.datasets.CIFAR10(root='./data', train=False,
                                        download=True, transform=transform)
-testloader = torch.utils.data.DataLoader(testset, batch_size=4,
+testloader_CIFAR = torch.utils.data.DataLoader(testset_CIFAR, batch_size=4,
                                          shuffle=False, num_workers=2)
 
 classes = ('plane', 'car', 'bird', 'cat',
@@ -46,8 +49,10 @@ class Net(nn.Module):
         return x
 
 
-# net = Net()
 net = models.ResNet(models.BasicBlock, [2, 2, 2, 2], num_classes=10)
+
+if use_cuda:
+    net = net.cuda()
 
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
@@ -55,7 +60,7 @@ optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 for epoch in range(2):  # loop over the dataset multiple times
 
     running_loss = 0.0
-    for i, data in enumerate(trainloader, 0):
+    for i, data in enumerate(trainloader_CIFAR, 0):
         # get the inputs
         inputs, labels = data
 
@@ -80,7 +85,7 @@ for epoch in range(2):  # loop over the dataset multiple times
 
 print('Finished Training')
 
-dataiter = iter(testloader)
+dataiter = iter(testloader_CIFAR)
 images, labels = dataiter.next()
 
 print('GroundTruth: ', ' '.join('%5s' % classes[labels[j]] for j in range(4)))
@@ -92,7 +97,7 @@ print('Predicted: ', ' '.join('%5s' % classes[predicted[j]]
 
 correct = 0
 total = 0
-for data in testloader:
+for data in testloader_CIFAR:
     images, labels = data
     outputs = net(Variable(images))
     _, predicted = torch.max(outputs.data, 1)
@@ -104,7 +109,7 @@ print('Accuracy of the network on the 10000 test images: %d %%' % (
 
 class_correct = list(0. for i in range(10))
 class_total = list(0. for i in range(10))
-for data in testloader:
+for data in testloader_CIFAR:
     images, labels = data
     outputs = net(Variable(images))
     _, predicted = torch.max(outputs.data, 1)
@@ -118,3 +123,15 @@ for data in testloader:
 for i in range(10):
     print('Accuracy of %5s : %2d %%' % (
         classes[i], 100 * class_correct[i] / class_total[i]))
+
+
+# Load MNIST Dataset
+trainset_MNIST = torchvision.datasets.MNIST(root='./data', train=True,
+                                        download=True, transform=transform)
+trainloader_MNIST = torch.utils.data.DataLoader(trainset_MNIST, batch_size=4,
+                                          shuffle=True, num_workers=2)
+
+testset_MNIST = torchvision.datasets.CIFAR10(root='./data', train=False,
+                                       download=True, transform=transform)
+testloader_MNIST = torch.utils.data.DataLoader(testset_MNIST, batch_size=4,
+                                         shuffle=False, num_workers=2)
