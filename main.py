@@ -139,8 +139,8 @@ testset_MNIST = torchvision.datasets.CIFAR10(root='./data', train=False,
 testloader_MNIST = torch.utils.data.DataLoader(testset_MNIST, batch_size=100,
                                          shuffle=False, num_workers=2)
 
-print '==>>> total trainning batch number: {}'.format(len(trainloader_MNIST))
-print '==>>> total testing batch number: {}'.format(len(testloader_MNIST))
+print "==>>> total trainning batch number: {}".format(len(trainloader_MNIST))
+print "==>>> total testing batch number: {}".format(len(testloader_MNIST))
 
 optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
 
