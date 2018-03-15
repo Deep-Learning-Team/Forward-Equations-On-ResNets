@@ -15,14 +15,14 @@ transform = transforms.Compose(
 
 # Load CIFAR10 Dataset
 trainset_CIFAR = torchvision.datasets.CIFAR10(root='./data', train=True,
-                                        download=True, transform=transform)
+                                              download=True, transform=transform)
 trainloader_CIFAR = torch.utils.data.DataLoader(trainset_CIFAR, batch_size=4,
-                                          shuffle=True, num_workers=2)
+                                                shuffle=True, num_workers=2)
 
 testset_CIFAR = torchvision.datasets.CIFAR10(root='./data', train=False,
-                                       download=True, transform=transform)
+                                             download=True, transform=transform)
 testloader_CIFAR = torch.utils.data.DataLoader(testset_CIFAR, batch_size=4,
-                                         shuffle=False, num_workers=2)
+                                               shuffle=False, num_workers=2)
 
 classes = ('plane', 'car', 'bird', 'cat',
            'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
@@ -127,20 +127,21 @@ for i in range(10):
 
 
 # Load MNIST Dataset
-transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5,), (1.0,))])
+transform = transforms.Compose(
+    [transforms.ToTensor(), transforms.Normalize((0.5,), (1.0,))])
 
 trainset_MNIST = torchvision.datasets.MNIST(root='./data', train=True,
-                                        download=True, transform=transform)
+                                            download=True, transform=transform)
 trainloader_MNIST = torch.utils.data.DataLoader(trainset_MNIST, batch_size=100,
-                                          shuffle=True, num_workers=2)
+                                                shuffle=True, num_workers=2)
 
 testset_MNIST = torchvision.datasets.CIFAR10(root='./data', train=False,
-                                       download=True, transform=transform)
+                                             download=True, transform=transform)
 testloader_MNIST = torch.utils.data.DataLoader(testset_MNIST, batch_size=100,
-                                         shuffle=False, num_workers=2)
+                                               shuffle=False, num_workers=2)
 
-print "==>>> total trainning batch number: {}".format(len(trainloader_MNIST))
-print "==>>> total testing batch number: {}".format(len(testloader_MNIST))
+print("==>>> total trainning batch number: {}".format(len(trainloader_MNIST)))
+print("==>>> total testing batch number: {}".format(len(testloader_MNIST)))
 
 optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
 
@@ -159,9 +160,9 @@ for epoch in xrange(10):
         ave_loss = ave_loss * 0.9 + loss.data[0] * 0.1
         loss.backward()
         optimizer.step()
-        if (batch_idx+1) % 100 == 0 or (batch_idx+1) == len(train_loader):
+        if (batch_idx + 1) % 100 == 0 or (batch_idx + 1) == len(train_loader):
             print '==>>> epoch: {}, batch index: {}, train loss: {:.6f}'.format(
-                epoch, batch_idx+1, ave_loss)
+                epoch, batch_idx + 1, ave_loss)
     # testing
     correct_cnt, ave_loss = 0, 0
     total_cnt = 0
@@ -177,8 +178,8 @@ for epoch in xrange(10):
         # smooth average
         ave_loss = ave_loss * 0.9 + loss.data[0] * 0.1
 
-        if(batch_idx+1) % 100 == 0 or (batch_idx+1) == len(test_loader):
+        if(batch_idx + 1) % 100 == 0 or (batch_idx + 1) == len(test_loader):
             print '==>>> epoch: {}, batch index: {}, test loss: {:.6f}, acc: {:.3f}'.format(
-                epoch, batch_idx+1, ave_loss, correct_cnt * 1.0 / total_cnt)
+                epoch, batch_idx + 1, ave_loss, correct_cnt * 1.0 / total_cnt)
 
 torch.save(model.state_dict(), model.name())
