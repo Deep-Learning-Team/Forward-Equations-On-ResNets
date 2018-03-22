@@ -52,7 +52,8 @@ class Net(nn.Module):
 net = models.ResNet(models.BasicBlock, [2, 2, 2, 2], num_classes=10)
 
 if use_cuda:
-    net = net.cuda()
+    # net = net.cuda()
+    net = nn.DataParallel(net).cuda()
     print("Training the network using CUDA")
 
 criterion = nn.CrossEntropyLoss()
