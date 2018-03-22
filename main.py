@@ -56,7 +56,7 @@ if use_cuda:
     net = nn.DataParallel(net).cuda()
     print("Training the network using CUDA")
 
-criterion = nn.CrossEntropyLoss()
+criterion = nn.CrossEntropyLoss().cuda()
 optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
 for epoch in range(2):  # loop over the dataset multiple times
