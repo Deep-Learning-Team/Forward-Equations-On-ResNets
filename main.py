@@ -74,7 +74,10 @@ for epoch in range(2):  # loop over the dataset multiple times
 
         # forward + backward + optimize
         outputs = net(inputs)
-        loss = criterion(outputs, labels.cuda())
+        if use_cuda:
+            loss = criterion(outputs, labels.cuda())
+        else:
+            loss = criterion(outputs, labels)
         loss.backward()
         optimizer.step()
 
