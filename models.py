@@ -1,100 +1,120 @@
+import torch
 import torch.nn as nn
-import math
+import torch.optim as optim
+import torch.nn.functional as F
 
 
-class BasicBlock(nn.Module):
-    expansion = 1
+class Net(torch.nn.Module):
 
-    def __init__(self, inplanes, planes, stride=1, downsample=None):
-        super(BasicBlock, self).__init__()
-        self.conv1 = conv3x3(inplanes, planes, stride)
-        self.bn1 = nn.BatchNorm2d(planes)
-        self.relu = nn.ReLU(inplace=True)
-        self.conv2 = conv3x3(planes, planes)
-        self.bn2 = nn.BatchNorm2d(planes)
-        self.downsample = downsample
-        self.stride = stride
+    def __init__(self, input_size):
+        super(Net, self).__init__()
+        self.INPUT_SIZE = input_size
+        self.OUTPUT_SIZE = 1
+        self.L2_PEN = 1e-6
+        self.NUM_EPOCHS = 200
+        self.H2_SIZE = 64
+        self.H3_SIZE = 64
+        self.H1_DROPOUT = 0.9
+        self.LR = 0.1
+        self.H1_SIZE = self.INPUT_SIZE
+        self.h1 = nn.Sequential(nn.Linear(self.INPUT_SIZE, self.H1_SIZE, bias=True),
+                                nn.LeakyReLU(negative_slope=0.01),
+                                nn.Dropout(p=self.H1_DROPOUT))
+        self.h2 = nn.Sequential(nn.Linear(self.H1_SIZE, self.H2_SIZE, bias=False),
+                                nn.LeakyReLU(negative_slope=0.01))
+        self.h3 = nn.Sequential(nn.Linear(self.H2_SIZE, self.H3_SIZE, bias=False),
+                                nn.LeakyReLU(negative_slope=0.01))
+        self.output = nn.Sequential(nn.Linear(self.H3_SIZE, self.OUTPUT_SIZE, bias=False),
+                                    nn.Sigmoid())
 
     def forward(self, x):
-        residual = x
 
-        out = self.conv1(x)
-        out = self.bn1(out)
-        out = self.relu(out)
-
-        out = self.conv2(out)
-        out = self.bn2(out)
-
-        if self.downsample is not None:
-            residual = self.downsample(x)
-
-        out += residual
-        out = self.relu(out)
+        out = self.h1(x)
+        out = self.h2(out)
+        out = self.h3(out)
+        out = self.output(out)
 
         return out
 
 
-def conv3x3(in_planes, out_planes, stride=1):
-    """3x3 convolution with padding"""
-    return nn.Conv2d(in_planes, out_planes, kernel_size=3, stride=stride,
-                     padding=1, bias=False)
+class ResNet(torch.nn.Module):
 
 
-class ResNet(nn.Module):
-
-    def __init__(self, block, layers, num_classes=1000):
-        self.inplanes = 64
+    def __init__(self, input_size):
         super(ResNet, self).__init__()
-        self.conv1 = nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3,
-                               bias=False)
-        self.bn1 = nn.BatchNorm2d(64)
-        self.relu = nn.ReLU(inplace=True)
-        self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
-        self.layer1 = self._make_layer(block, 64, layers[0])
-        self.layer2 = self._make_layer(block, 128, layers[1], stride=2)
-        self.layer3 = self._make_layer(block, 256, layers[2], stride=2)
-        self.layer4 = self._make_layer(block, 512, layers[3], stride=2)
-        self.avgpool = nn.AvgPool2d(1, stride=1)
-        self.fc = nn.Linear(512 * block.expansion, num_classes)
-
-        for m in self.modules():
-            if isinstance(m, nn.Conv2d):
-                n = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
-                m.weight.data.normal_(0, math.sqrt(2. / n))
-            elif isinstance(m, nn.BatchNorm2d):
-                m.weight.data.fill_(1)
-                m.bias.data.zero_()
-
-    def _make_layer(self, block, planes, blocks, stride=1):
-        downsample = None
-        if stride != 1 or self.inplanes != planes * block.expansion:
-            downsample = nn.Sequential(
-                nn.Conv2d(self.inplanes, planes * block.expansion,
-                          kernel_size=1, stride=stride, bias=False),
-                nn.BatchNorm2d(planes * block.expansion),
-            )
-
-        layers = []
-        layers.append(block(self.inplanes, planes, stride, downsample))
-        self.inplanes = planes * block.expansion
-        for i in range(1, blocks):
-            layers.append(block(self.inplanes, planes))
-
-        return nn.Sequential(*layers)
+        self.INPUT_SIZE = input_size
+        self.H1_SIZE = self.INPUT_SIZE
+        self.H2_SIZE = self.INPUT_SIZE
+        self.H3_SIZE = self.INPUT_SIZE
+        self.OUTPUT_SIZE = 1
+        self.L2_PEN = 1e-6
+        self.NUM_EPOCHS = 200
+        self.H1_DROPOUT = 0.9
+        self.LR = 0.1
+        self.h1 = nn.Sequential(nn.Linear(self.INPUT_SIZE, self.H1_SIZE, bias=True),
+                                nn.LeakyReLU(negative_slope=0.01),
+                                nn.Dropout(p=self.H1_DROPOUT))
+        self.h2 = nn.Sequential(nn.Linear(self.H1_SIZE, self.H2_SIZE, bias=False),
+                                nn.LeakyReLU(negative_slope=0.01))
+        self.h3 = nn.Sequential(nn.Linear(self.H2_SIZE, self.H3_SIZE, bias=False),
+                                nn.LeakyReLU(negative_slope=0.01))
+        self.h4 = nn.Sequential(nn.Linear(self.H2_SIZE, self.H3_SIZE, bias=False),
+                                nn.LeakyReLU(negative_slope=0.01))
+        self.output = nn.Sequential(nn.Linear(self.H3_SIZE, self.OUTPUT_SIZE, bias=False),
+                                    nn.Sigmoid())
 
     def forward(self, x):
-        x = self.conv1(x)
-        x = self.bn1(x)
-        x = self.relu(x)
-        x = self.maxpool(x)
 
-        x = self.layer1(x)
-        x = self.layer2(x)
-        x = self.layer3(x)
-        x = self.layer4(x)
+        out = self.h1(x) + x
+        out = self.h2(out) + out
+        out = self.h3(out) + out
+        out = self.h4(out) + out
+        out = self.output(out)
 
-        x = self.avgpool(x)
-        x = x.view(x.size(0), -1)
-        x = self.fc(x)
+        return out
 
-        return x
+
+class TDRNN(torch.nn.Module):
+
+    # list of hyperparameters
+
+    def __init__(self, input_size):
+        super(TDRNN, self).__init__()
+        self.INPUT_SIZE = input_size
+        self.H1_SIZE = self.INPUT_SIZE
+        self.H2_SIZE = self.INPUT_SIZE
+        self.H3_SIZE = self.INPUT_SIZE
+        self.OUTPUT_SIZE = 1
+        self.L2_PEN = 1e-6
+        self.NUM_EPOCHS = 200
+        self.H1_DROPOUT = 0.9
+        self.LR = 0.1
+        self.h1 = nn.Linear(self.INPUT_SIZE, self.H1_SIZE, bias=True)
+        self.h2 = nn.Linear(self.H1_SIZE, self.H2_SIZE, bias=True)
+        self.h3 = nn.Linear(self.H2_SIZE, self.H3_SIZE, bias=True)
+        self.h4 = nn.Linear(self.H3_SIZE, self.OUTPUT_SIZE, bias=True)
+        # self.h1 = nn.Sequential(nn.Linear(ResNet.INPUT_SIZE, ResNet.H1_SIZE, bias=True),
+        #           nn.LeakyReLU(negative_slope=0.01),
+        #           nn.Dropout(p=ResNet.H1_DROPOUT))
+#         self.h2 = nn.Sequential(nn.Linear(TDRNN.H1_SIZE, TDRNN.H2_SIZE, bias=False),
+#                                 nn.LeakyReLU(negative_slope=0.01))
+#         self.h3 = nn.Sequential(nn.Linear(TDRNN.H2_SIZE, TDRNN.H3_SIZE, bias=False),
+#                                 nn.LeakyReLU(negative_slope=0.01))
+#         self.h4 = nn.Sequential(nn.Linear(TDRNN.H2_SIZE, TDRNN.H3_SIZE, bias=False),
+#                                 nn.LeakyReLU(negative_slope=0.01))
+        self.output = nn.Sequential(nn.Linear(self.H3_SIZE, self.OUTPUT_SIZE, bias=False),
+                                    nn.Sigmoid())
+
+    def forward(self, x):
+        LReLU = nn.LeakyReLU(negative_slope=0.01)
+        # print(x.shape)
+        # print(self.h1(x).shape)
+        # print(self.h1.weight.t().shape)
+        # print(torch.matmul(x, self.h1.weight.t()).shape)
+        out = LReLU(self.h1(x) - torch.matmul(x, self.h1.weight.t())) + x
+        out = LReLU(self.h2(out) - torch.matmul(out, self.h2.weight.t())) + out
+        out = LReLU(self.h3(out) - torch.matmul(out, self.h3.weight.t())) + out
+        out = LReLU(self.h4(out) - torch.matmul(out, self.h4.weight.t())) + out
+        out = self.output(out)
+
+        return out
