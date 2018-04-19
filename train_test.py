@@ -2,6 +2,7 @@ import torch
 import numpy as np
 from aux import accuracy
 import matplotlib.pyplot as plt
+from torch.autograd import Variable
 
 
 def train_test(network, X_train_tor, X_test_tor, y_train_tor, y_test_tor):
