@@ -69,4 +69,4 @@ def train_test(network, X_train_tor, X_test_tor, y_train_tor, y_test_tor):
     final_net.eval()
     train_pred = final_net(X_train_tor_noise)
     loss_noise = accuracy(train_pred, y_train_tor)
-    print('\nAccuracy after adding noise: {}'.format(loss_noise))
+    print('\nAccuracy after adding noise: {}%'.format(loss_noise))

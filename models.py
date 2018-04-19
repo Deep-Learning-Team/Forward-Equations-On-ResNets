@@ -39,7 +39,6 @@ class Net(torch.nn.Module):
 
 class ResNet(torch.nn.Module):
 
-
     def __init__(self, input_size):
         super(ResNet, self).__init__()
         self.INPUT_SIZE = input_size
@@ -96,12 +95,12 @@ class TDRNN(torch.nn.Module):
         # self.h1 = nn.Sequential(nn.Linear(ResNet.INPUT_SIZE, ResNet.H1_SIZE, bias=True),
         #           nn.LeakyReLU(negative_slope=0.01),
         #           nn.Dropout(p=ResNet.H1_DROPOUT))
-#         self.h2 = nn.Sequential(nn.Linear(TDRNN.H1_SIZE, TDRNN.H2_SIZE, bias=False),
-#                                 nn.LeakyReLU(negative_slope=0.01))
-#         self.h3 = nn.Sequential(nn.Linear(TDRNN.H2_SIZE, TDRNN.H3_SIZE, bias=False),
-#                                 nn.LeakyReLU(negative_slope=0.01))
-#         self.h4 = nn.Sequential(nn.Linear(TDRNN.H2_SIZE, TDRNN.H3_SIZE, bias=False),
-#                                 nn.LeakyReLU(negative_slope=0.01))
+        # self.h2 = nn.Sequential(nn.Linear(TDRNN.H1_SIZE, TDRNN.H2_SIZE, bias=False),
+        #                         nn.LeakyReLU(negative_slope=0.01))
+        # self.h3 = nn.Sequential(nn.Linear(TDRNN.H2_SIZE, TDRNN.H3_SIZE, bias=False),
+        #                         nn.LeakyReLU(negative_slope=0.01))
+        # self.h4 = nn.Sequential(nn.Linear(TDRNN.H2_SIZE, TDRNN.H3_SIZE, bias=False),
+        #                         nn.LeakyReLU(negative_slope=0.01))
         self.output = nn.Sequential(nn.Linear(self.H3_SIZE, self.OUTPUT_SIZE, bias=False),
                                     nn.Sigmoid())
 
