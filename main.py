@@ -1,15 +1,4 @@
-import argparse
-import torch
-import torchvision
-import torch.nn as nn
-import torch.nn.functional as F
-import torch.optim as optim
-from torchvision import datasets, transforms
-from torch.autograd import Variable
 import numpy as np
-from sklearn import preprocessing
-from torch.nn import init
-import math
 import pandas as pd
 
 import matplotlib.pyplot as plt
@@ -23,7 +12,6 @@ pd.options.display.max_rows = 20
 import models
 import preprocessing
 import train_test as tt
-import aux
 
 if __name__ == '__main__':
     data = preprocessing.load_data("madelon")
