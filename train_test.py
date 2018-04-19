@@ -44,16 +44,16 @@ def train_test(network, X_train_tor, X_test_tor, y_train_tor, y_test_tor):
 
         if VERBOSE and ((step % 100) == 0) and step != 0:
             print('Step: {}'.format(step))
-            print('\tTrain Accuracy: {}%'.format(hist_correct_train[step]))
-            print('\tTest Accuracy: {}%'.format(hist_correct_test[step]))
+            print('\tTrain Accuracy: {0:.3f}%'.format(hist_correct_train[step]))
+            print('\tTest Accuracy: {0:.3f}%'.format(hist_correct_test[step]))
 
         # Update based on train performance
         optimizer.zero_grad()
         loss_train.backward()
         optimizer.step()
 
-    print('\nFinal Train Accuracy: {}%'.format(hist_correct_train[-1]))
-    print('Final Test Accuracy: {}%'.format(hist_correct_test[-1]))
+    print('\nFinal Train Accuracy: {0:.3f}%'.format(hist_correct_train[-1]))
+    print('Final Test Accuracy: {0:.3f}%'.format(hist_correct_test[-1]))
     # print('Mean cross validation performance: {}'.format(fold_mean))
 
     plt.plot(epochs, hist_correct_train, epochs, hist_correct_test)
@@ -69,4 +69,4 @@ def train_test(network, X_train_tor, X_test_tor, y_train_tor, y_test_tor):
     final_net.eval()
     train_pred = final_net(X_train_tor_noise)
     loss_noise = accuracy(train_pred, y_train_tor)
-    print('\nAccuracy after adding noise: {}%'.format(loss_noise))
+    print('\nAccuracy after adding noise: {0:.3f}%'.format(loss_noise))

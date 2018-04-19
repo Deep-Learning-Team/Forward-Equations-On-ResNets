@@ -1,7 +1,5 @@
 import torch
 import torch.nn as nn
-import torch.optim as optim
-import torch.nn.functional as F
 
 
 class Net(torch.nn.Module):
@@ -11,7 +9,7 @@ class Net(torch.nn.Module):
         self.INPUT_SIZE = input_size
         self.OUTPUT_SIZE = 1
         self.L2_PEN = 1e-6
-        self.NUM_EPOCHS = 200
+        self.NUM_EPOCHS = 500
         self.H2_SIZE = 64
         self.H3_SIZE = 64
         self.H1_DROPOUT = 0.9
@@ -47,7 +45,7 @@ class ResNet(torch.nn.Module):
         self.H3_SIZE = self.INPUT_SIZE
         self.OUTPUT_SIZE = 1
         self.L2_PEN = 1e-6
-        self.NUM_EPOCHS = 200
+        self.NUM_EPOCHS = 500
         self.H1_DROPOUT = 0.9
         self.LR = 0.1
         self.h1 = nn.Sequential(nn.Linear(self.INPUT_SIZE, self.H1_SIZE, bias=True),
@@ -85,7 +83,7 @@ class TDRNN(torch.nn.Module):
         self.H3_SIZE = self.INPUT_SIZE
         self.OUTPUT_SIZE = 1
         self.L2_PEN = 1e-6
-        self.NUM_EPOCHS = 200
+        self.NUM_EPOCHS = 500
         self.H1_DROPOUT = 0.9
         self.LR = 0.1
         self.h1 = nn.Linear(self.INPUT_SIZE, self.H1_SIZE, bias=True)
