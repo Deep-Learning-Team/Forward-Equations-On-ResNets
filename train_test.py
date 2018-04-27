@@ -63,7 +63,7 @@ def train_test(network, X_train_tor, X_test_tor, y_train_tor, y_test_tor):
     plt.legend(['Train', 'Test'], loc='lower right')
     plt.show()
 
-    # Our work
+    # Test of stability of noise
     X_train_tor_noise = X_train_tor + \
         Variable(torch.randn(X_train_tor.size()) * 1.0)
     final_net.eval()
