@@ -12,7 +12,7 @@ def train_test(network, X_train_tor, X_test_tor, y_train_tor, y_test_tor):
     final_net = network
     final_net.train()
 
-    # optimizer = torch.optim.Adam(net.parameters(), weight_decay=final_net.L2_PEN, lr=final_net.LR)
+    # optimizer = torch.optim.Adam(final_net.parameters(), weight_decay=final_net.L2_PEN, lr=final_net.LR)
     optimizer = torch.optim.SGD(final_net.parameters(),
                                 weight_decay=final_net.L2_PEN,
                                 lr=final_net.LR,
