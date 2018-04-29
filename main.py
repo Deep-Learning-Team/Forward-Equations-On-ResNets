@@ -44,6 +44,7 @@ if __name__ == '__main__':
 
     # ep.error_plot(models.SORNN(input_size), cv_data,
     #               X_test_tor, y_test_tor, iterations=10)
+    #
 
     network_list = [models.ResNet(input_size), models.TDRNN(input_size), models.ODRNN(input_size), models.SORNN(input_size)]
     name_network = ['ResNet', 'TDRNN', 'ODRNN', 'SORNN']
