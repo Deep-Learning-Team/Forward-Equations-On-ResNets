@@ -6,11 +6,13 @@ from torch.autograd import Variable
 
 VERBOSE = True
 # def train_test(network, X_train_tor, X_val_to, X_test_tor, y_train_tor, y_test_tor):
+
+
 def train_test(network, cv_data, X_test_tor, y_test_tor):
     K_FOLDS = 5
 
     for fold in range(K_FOLDS):
-        print('Fold {} of {}'.format(fold+1, K_FOLDS))
+        print('Fold {} of {}'.format(fold + 1, K_FOLDS))
 
         X_train_tor, X_val_tor, y_train_tor, y_val_tor = cv_data[fold]
 
@@ -60,7 +62,7 @@ def train_test(network, cv_data, X_test_tor, y_test_tor):
         # accuracy_val_scores[fold] = hist_correct_val[-1]
 
         plt.plot(epochs, hist_correct_train, epochs, hist_correct_val)
-        plt.title('Fold {} Accuracy'.format(fold+1))
+        plt.title('Fold {} Accuracy'.format(fold + 1))
         plt.xlabel('Epoch')
         plt.ylabel('Percent Accuracy')
         plt.ylim((0, 100))
@@ -74,8 +76,6 @@ def train_test(network, cv_data, X_test_tor, y_test_tor):
     loss_test = accuracy(test_pred, y_test_tor)
     print('\nAccuracy on test set: {0:.3f}%'.format(loss_test))
 
-
-
     # Test of stability of noise
     X_test_tor_noise = X_test_tor + \
         Variable(torch.randn(X_test_tor.size()) * 0.1)
@@ -83,13 +83,6 @@ def train_test(network, cv_data, X_test_tor, y_test_tor):
     test_pred = net(X_test_tor_noise)
     loss_noise = accuracy(test_pred, y_test_tor)
     print('\nAccuracy after adding noise: {0:.3f}%'.format(loss_noise))
-
-
-
-
-
-
-
 
     # VERBOSE = True
     #

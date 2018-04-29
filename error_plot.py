@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from torch.autograd import Variable
 
 
-def error_plot(network, cv_data, X_test_tor, y_test_tor, iterations = 100):
+def error_plot(network, cv_data, X_test_tor, y_test_tor, iterations=100):
     # print('Fold {} of {}'.format(fold+1, K_FOLDS))
     K_FOLDS = 5
     vec_loss_noise = np.array([[]])
@@ -18,11 +18,11 @@ def error_plot(network, cv_data, X_test_tor, y_test_tor, iterations = 100):
             print("iteration {}".format(fold))
             X_train_tor, X_val_tor, y_train_tor, y_val_tor = cv_data[fold]
             optimizer = torch.optim.SGD(net.parameters(),
-                                      weight_decay=net.L2_PEN,
-                                      lr=net.LR,
-                                      momentum=0.00,
-                                      dampening=0.00,
-                                      nesterov=False)
+                                        weight_decay=net.L2_PEN,
+                                        lr=net.LR,
+                                        momentum=0.00,
+                                        dampening=0.00,
+                                        nesterov=False)
             loss_func = torch.nn.BCELoss()
 
             epochs = np.arange(net.NUM_EPOCHS)
@@ -56,7 +56,6 @@ def error_plot(network, cv_data, X_test_tor, y_test_tor, iterations = 100):
                 loss_train.backward()
                 optimizer.step()
 
-
             #   plt.plot(epochs, hist_correct_train, epochs, hist_correct_val)
             #   plt.title('Fold {} Accuracy'.format(fold+1))
             #   plt.xlabel('Epoch')
@@ -72,14 +71,12 @@ def error_plot(network, cv_data, X_test_tor, y_test_tor, iterations = 100):
         loss_test = accuracy(test_pred, y_test_tor)
         # print('\nAccuracy on test set: {0:.3f}%'.format(loss_test))
 
-
-
         # Test of stability of noise
         trail_noise = []
         for i in range(10):
             # print("i is {}".format(i))
             X_test_tor_noise = X_test_tor + \
-              Variable(torch.randn(X_test_tor.size()) * 0.1)
+                Variable(torch.randn(X_test_tor.size()) * 0.1)
             net.eval()
             test_pred = net(X_test_tor_noise)
             loss_noise = accuracy(test_pred, y_test_tor)
@@ -100,6 +97,6 @@ def error_plot(network, cv_data, X_test_tor, y_test_tor, iterations = 100):
     mean = np.mean(vec_loss_noise, axis=1)
     deviation = np.std(vec_loss_noise, axis=1)
     ax = plt.figure().add_subplot(111)
-    xaxis = np.array(range(1,iterations + 1))
+    xaxis = np.array(range(1, iterations + 1))
     ax.errorbar(xaxis, mean, yerr=deviation, fmt='-.D', label='Error bar')
     plt.show()

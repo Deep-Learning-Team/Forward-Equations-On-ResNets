@@ -19,7 +19,8 @@ if __name__ == '__main__':
     row, col = data.shape
     # X_train_tor, X_val_tor, X_test_tor, y_train_tor, y_val_tor, y_test_tor = preprocessing.seperate_data(
     #     data, holdout_split=0.2)
-    cv_data, X_test_tor, y_test_tor = preprocessing.seperate_data(data, holdout_split=0.2)
+    cv_data, X_test_tor, y_test_tor = preprocessing.seperate_data(
+        data, holdout_split=0.2)
     input_size = col - 1
 
     # print('\nNet: ')
@@ -38,4 +39,5 @@ if __name__ == '__main__':
     # tt.train_test(models.SORNN(input_size), X_train_tor,
     #               X_test_tor, y_train_tor, y_test_tor)
     # tt.train_test(models.SORNN(input_size), cv_data, X_test_tor, y_test_tor)
-    ep.error_plot(models.SORNN(input_size), cv_data, X_test_tor, y_test_tor, iterations = 10)
+    ep.error_plot(models.SORNN(input_size), cv_data,
+                  X_test_tor, y_test_tor, iterations=10)
