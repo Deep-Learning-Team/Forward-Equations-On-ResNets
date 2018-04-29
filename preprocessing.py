@@ -108,23 +108,38 @@ def seperate_data(data, holdout_split=0.2):
     # create robust scaler for input
     scale_in = RobustScaler().fit(X_train)
 
-    # all of train data
-    X_train_scale = scale_in.transform(X_train)
-    y_train_scale = y_train  # don't scale binary
-
     # all of test data
     X_test_scale = scale_in.transform(X_test)
     y_test_scale = y_test
 
     # prepare for PyTorch
-    X_train_tor = Variable(torch.FloatTensor(
-        X_train_scale), requires_grad=False)
     X_test_tor = Variable(torch.FloatTensor(X_test_scale), requires_grad=False)
-    y_train_tor = Variable(torch.FloatTensor(
-        y_train_scale), requires_grad=False)
     y_test_tor = Variable(torch.FloatTensor(y_test_scale), requires_grad=False)
 
-    print('Train points: {}'.format(np.size(y_train_scale)))
     print('Test points: {}'.format(np.size(y_test_scale)))
 
-    return X_train_tor, X_test_tor, y_train_tor, y_test_tor
+    return cv_data, X_test_tor, y_test_tor
+
+    # # create robust scaler for input
+    # scale_in = RobustScaler().fit(X_train)
+    #
+    # # all of train data
+    # X_train_scale = scale_in.transform(X_train)
+    # y_train_scale = y_train  # don't scale binary
+    #
+    # # all of test data
+    # X_test_scale = scale_in.transform(X_test)
+    # y_test_scale = y_test
+    #
+    # # prepare for PyTorch
+    # X_train_tor = Variable(torch.FloatTensor(
+    #     X_train_scale), requires_grad=False)
+    # X_test_tor = Variable(torch.FloatTensor(X_test_scale), requires_grad=False)
+    # y_train_tor = Variable(torch.FloatTensor(
+    #     y_train_scale), requires_grad=False)
+    # y_test_tor = Variable(torch.FloatTensor(y_test_scale), requires_grad=False)
+    #
+    # print('Train points: {}'.format(np.size(y_train_scale)))
+    # print('Test points: {}'.format(np.size(y_test_scale)))
+    #
+    # return X_train_tor, X_val_scale, X_test_tor, y_train_tor, y_val_scale, y_test_tor
