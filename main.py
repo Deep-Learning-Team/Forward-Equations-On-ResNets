@@ -23,7 +23,7 @@ if __name__ == '__main__':
     cv_data, X_test_tor, y_test_tor = preprocessing.seperate_data(
         data, holdout_split=0.2)
     input_size = col - 1
-    # *
+    # -
 
     # print('\nNet: ')
     # tt.train_test(models.Net(input_size), X_train_tor,
