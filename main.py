@@ -12,6 +12,7 @@ pd.options.display.max_rows = 20
 import models
 import preprocessing
 import train_test as tt
+import error_plot as ep
 
 if __name__ == '__main__':
     data = preprocessing.load_data("diabetes")
@@ -36,4 +37,5 @@ if __name__ == '__main__':
     print('\nSORNN: ')
     # tt.train_test(models.SORNN(input_size), X_train_tor,
     #               X_test_tor, y_train_tor, y_test_tor)
-    tt.train_test(models.SORNN(input_size), cv_data, X_test_tor, y_test_tor)
+    # tt.train_test(models.SORNN(input_size), cv_data, X_test_tor, y_test_tor)
+    ep.error_plot(models.SORNN(input_size), cv_data, X_test_tor, y_test_tor, iterations = 10)

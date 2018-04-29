@@ -192,7 +192,7 @@ class SORNN(torch.nn.Module):
         self.H4_SIZE = self.INPUT_SIZE
         self.OUTPUT_SIZE = 1
         self.L2_PEN = 1e-6
-        self.NUM_EPOCHS = 1000
+        self.NUM_EPOCHS = 100
         self.H1_DROPOUT = 0.9
         self.LR = 0.01
         self.h1 = nn.Linear(self.INPUT_SIZE, self.H1_SIZE, bias=True)
