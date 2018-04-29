@@ -10,6 +10,10 @@ VERBOSE = True
 
 def train_test(network, cv_data, X_test_tor, y_test_tor):
     K_FOLDS = 5
+    k = 0
+
+    cross_validation_array = np.array([[]])
+    training_array = np.array([[]])
 
     for fold in range(K_FOLDS):
         print('Fold {} of {}'.format(fold + 1, K_FOLDS))
@@ -19,7 +23,7 @@ def train_test(network, cv_data, X_test_tor, y_test_tor):
         net = network
         net.train()
 
-    #     optimizer = torch.optim.Adam(net.parameters(), weight_decay=net.L2_PEN, lr=net.LR)
+        # optimizer = torch.optim.Adam(net.parameters(), weight_decay=net.L2_PEN, lr=net.LR)
         optimizer = torch.optim.SGD(net.parameters(),
                                     weight_decay=net.L2_PEN,
                                     lr=net.LR,
@@ -61,13 +65,42 @@ def train_test(network, cv_data, X_test_tor, y_test_tor):
 
         # accuracy_val_scores[fold] = hist_correct_val[-1]
 
-        plt.plot(epochs, hist_correct_train, epochs, hist_correct_val)
-        plt.title('Fold {} Accuracy'.format(fold + 1))
-        plt.xlabel('Epoch')
-        plt.ylabel('Percent Accuracy')
-        plt.ylim((0, 100))
-        plt.legend(['Train', 'Validation'], loc='lower right')
-        plt.show()
+        # plt.plot(epochs, hist_correct_train, epochs, hist_correct_val)
+        # plt.title('Fold {} Accuracy'.format(fold + 1))
+        # plt.xlabel('Epoch')
+        # plt.ylabel('Percent Accuracy')
+        # plt.ylim((0, 100))
+        # plt.legend(['Train', 'Validation'], loc='lower right')
+        # plt.show()
+
+        hist_correct_val = np.array(hist_correct_val).reshape((-1, 1))
+        hist_correct_val = hist_correct_val.reshape((1, -1))
+        if k == 0:
+            cross_validation_array = hist_correct_val
+        else:
+            cross_validation_array = np.concatenate((cross_validation_array, hist_correct_val))
+        k = k + 1
+
+        hist_correct_train = np.array(hist_correct_train).reshape((-1, 1))
+        hist_correct_train = hist_correct_train.reshape((1, -1))
+        if k == 1:
+            training_array = hist_correct_train
+        else:
+            training_array = np.concatenate((training_array, hist_correct_train))
+        k = k + 1
+
+    cross_validation_array = np.array(cross_validation_array).ravel()
+    training_array = np.array(training_array).ravel()
+
+    ax = plt.figure().add_subplot(111)
+    xaxis = np.array(range(1, cross_validation_array.shape[0] + 1))
+    ax.plot(xaxis, cross_validation_array, label='Cross Validation')
+    ax.plot(xaxis, training_array, label='Training')
+    ax.set_xlabel('Number of Epochs')
+    ax.set_ylabel('Accuracy / \%')
+    plt.legend()
+    plt.show()
+
 
     # Accuracy of test set
     print(X_test_tor.norm)
@@ -83,6 +116,8 @@ def train_test(network, cv_data, X_test_tor, y_test_tor):
     test_pred = net(X_test_tor_noise)
     loss_noise = accuracy(test_pred, y_test_tor)
     print('\nAccuracy after adding noise: {0:.3f}%'.format(loss_noise))
+
+
 
     # VERBOSE = True
     #

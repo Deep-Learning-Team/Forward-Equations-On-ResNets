@@ -99,4 +99,5 @@ def error_plot(network, cv_data, X_test_tor, y_test_tor, iterations=100):
     ax = plt.figure().add_subplot(111)
     xaxis = np.array(range(1, iterations + 1))
     ax.errorbar(xaxis, mean, yerr=deviation, fmt='-.D', label='Error bar')
+    plt.legend()
     plt.show()
